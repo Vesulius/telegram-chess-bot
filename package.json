@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,14 @@
   "bugs": {
     "url": "https://github.com/Vesulius/telegram-chess-bot/issues"
   },
-  "homepage": "https://github.com/Vesulius/telegram-chess-bot#readme"
+  "homepage": "https://github.com/Vesulius/telegram-chess-bot#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "js-chess-engine": "^1.0.2",
+    "node-telegram-bot-api": "^0.56.0",
+    "npm": "^8.5.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
