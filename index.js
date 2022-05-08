@@ -26,13 +26,16 @@ const boardString = game => {
   const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
   const moves = game.exportJson().pieces
 
-  const emptyRow = () => Array(8).fill(' ')
-  const emptyBoard = () => Array(8).fill(null).map(v => emptyRow())
+  const emptyRow = () => Array(8).fill('–')
+  const emptyBoard = () =>
+    Array(8)
+      .fill(null)
+      .map(v => emptyRow())
 
   const addBoarders = board => {
     let empty = board
-    empty = empty.map((r, i) => [i+1, ...r])
-    return [[' ', ...letters], ...empty]
+    empty = empty.map((r, i) => [i + 1, ...r])
+    return [['–', ...letters], ...empty]
   }
 
   const intSpace = move => {
@@ -49,27 +52,32 @@ const boardString = game => {
     newBoard[xy[1]][xy[0]] = moves[move]
   }
 
-  const str = addBoarders(newBoard).map(row => row.join(' ')).join('\n')
+  const str = addBoarders(newBoard)
+    .map(row => row.join(' '))
+    .join('\n')
   return str
 }
 
 bot.onText(/board/, (msg, match) => {
-  if (game === null) {
+  if (!game) {
     bot.sendMessage(chatId, 'begin new game with "start"')
     return
   }
-  const gameState = boardState(game)
 
-  bot.sendMessage(chatId, gameState)
+  const chatId = msg.chat.id
+  const board = boardString(game)
+
+  bot.sendMessage(chatId, board)
 })
 
-bot.onText(/\D\d/, (msg, match) => {
+bot.onText(/\D\d\D\d/, (msg, match) => {
   const chatId = msg.chat.id
 
-  const moves = match[1]
-  console.log(moves)
+  const from = match[0].substring(0, 2)
+  const to = match[0].substring(2, 4)
+  console.log(game.move(from, to))
 
-  bot.sendMessage(chatId, `moved`)
+  bot.sendMessage(chatId, 'moved')
 })
 
 bot.onText(/ping/, (msg, match) => {
@@ -82,6 +90,5 @@ bot.onText(/ping/, (msg, match) => {
 
 bot.on('message', msg => {
   const chatId = msg.chat.id
-
   bot.sendMessage(chatId, 'Received your message')
 })
