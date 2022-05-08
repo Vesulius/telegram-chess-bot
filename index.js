@@ -12,9 +12,9 @@ let game = null
 bot.onText(/start/, (msg, match) => {
   const chatId = msg.chat.id
   game = new chessEngine.Game()
+  game.printToConsole()
   const status = game.exportJson()
   console.log(status)
-  game.printToConsole()
   console.log(boardString(game))
 
   bot.sendMessage(chatId, 'GAME ON!')
@@ -23,33 +23,37 @@ bot.onText(/start/, (msg, match) => {
 const boardString = game => {
   if (!game) return ''
 
-  const emptyRow = () => Array(8).fill(' ')
-  const emptyBoard = () => Array(8).fill(emptyRow())
-
-  const moves = game.exportJson().pieces
   const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+  const moves = game.exportJson().pieces
+
+  const emptyRow = () => Array(8).fill(' ')
+  const emptyBoard = () => Array(8).fill(null).map(v => emptyRow())
+
+  const addBoarders = board => {
+    let empty = board
+    empty = empty.map((r, i) => [i+1, ...r])
+    return [[' ', ...letters], ...empty]
+  }
 
   const intSpace = move => {
     const xy = move.split('')
     const x = letters.indexOf(xy[0])
-    const y = +xy[1]
+    const y = xy[1] - 1
     return [x, y]
   }
 
   const newBoard = emptyBoard()
 
   for (move in moves) {
-    console.log(moves[move])
     const xy = intSpace(move)
-    newBoard[xy[0]][xy[1]] = moves[move]
+    newBoard[xy[1]][xy[0]] = moves[move]
   }
 
-  const str = newBoard.map(row => row.join(' ')).join('\n')
-
+  const str = addBoarders(newBoard).map(row => row.join(' ')).join('\n')
   return str
 }
 
-bot.onText(/state/, (msg, match) => {
+bot.onText(/board/, (msg, match) => {
   if (game === null) {
     bot.sendMessage(chatId, 'begin new game with "start"')
     return
