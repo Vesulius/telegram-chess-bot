@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  node-dev-env:
+    build: .
+    command: npm start
+    volumes:
+      - ./:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    container_name: node-dev-env
+
+volumes:
+  node_modules:
