@@ -76,6 +76,7 @@ bot.onText(/\D\d\D\d/, (msg, match) => {
   const from = match[0].substring(0, 2)
   const to = match[0].substring(2, 4)
   console.log(game.move(from, to))
+  console.log(game.aiMove());
 
   bot.sendMessage(chatId, 'moved')
 })
